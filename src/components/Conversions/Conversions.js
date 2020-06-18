@@ -12,13 +12,21 @@ const Conversions = () => {
       quants,
       unit,
       submitted,
-      value
+      value,
+      tempMatrix
    } = useContext(QuantContext);
    
    const Result = ({item, k}) => {
       const relK = k || 1;
-      const offset = item.offset && item.id !== unit? item.offset: 0;
-      const res = offset + value*(relK/item.k);
+      let matrixRes;
+      
+      if (quant === "temperature"){
+         const matrixValue = tempMatrix.find(it => it.id === unit);
+         const matrixCalc = matrixValue.calcs[item.id];
+         const x = Number(value);  // pouziva se v eval()
+         matrixRes = eval(matrixCalc) || 0; 
+      }
+      const res = quant === "temperature"? matrixRes : value*(relK/item.k);
       return <>
          <TableRow key={item.id}>
             <TableCell>{item.id} </TableCell>

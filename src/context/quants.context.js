@@ -1,6 +1,33 @@
 import React, {useState} from 'react';
 const QuantContext = React.createContext([{}, ()=>{}]);
 
+const tempMatrix = [
+   {
+      id: "Celsius",
+      calcs: {
+         Celsius: "x",
+         Farenheit: "x * 1.8 + 32", 
+         Kelvin: "x + 273.15"
+      }
+   },
+   {
+      id: "Farenheit",
+      calcs: {
+         Celsius: "(x - 32) / 1.8", 
+         Kelvin: "(x + 459.67) * 5/9", 
+         Farenheit: "x"
+      }
+   },
+   {
+      id: "Kelvin",
+      calcs: {
+         Farenheit: "x * 9/5 - 459.67",
+         Celsius: "x - 273.15",
+         Kelvin: "x"
+      }
+   },
+]
+
 const quantsData = [
    { 
       id: "length", 
@@ -26,7 +53,7 @@ const quantsData = [
       label: "Volume", 
       units: [
          {id: "liters", k: 1, symbol: "l"}, 
-         {id: "gallons", k: 4.546, symbol: "ga"}, 
+         {id: "gallons", k: 4.546, symbol: "gal"}, 
          {id: "pints", k: 0.568, symbol: "pt"}
       ]             
    },
@@ -35,7 +62,8 @@ const quantsData = [
       label: "Temperature", 
       units: [
          {id: "Celsius", k: 1, symbol: "°C"}, 
-         {id: "Farenheit", k: 1.8, offset: 32, symbol: "°F"}, 
+         {id: "Farenheit", symbol: "°F"}, 
+         {id: "Kelvin", symbol: "K"}, 
       ]       
    },
    { 
@@ -54,7 +82,6 @@ const quantsData = [
 
 const QuantContextProvider = (props) => {
    const [quant, setQuant] = useState("");
-   const [quants, ] = useState(quantsData);
    const [unit, setUnit] = useState("");
    const [value, setValue] = useState("");
    const [submitted, setSubmitted] = useState(false);
@@ -62,7 +89,7 @@ const QuantContextProvider = (props) => {
    const changeQuant = (quantId) => {
       setSubmitted(false);
       setQuant(quantId);
-      const currentQuant = quants.find(item => item.id === quantId);
+      const currentQuant = quantsData.find(item => item.id === quantId);
       const stdUnit = currentQuant.units.find(item => item.k === 1);
       setUnit(stdUnit.id)
    }
@@ -70,10 +97,11 @@ const QuantContextProvider = (props) => {
       <QuantContext.Provider value={
          {
             quant: quant,
-            quants: quants,
+            quants: quantsData,
             unit: unit,
             submitted: submitted,
             value: value,
+            tempMatrix: tempMatrix,
             setQuant: changeQuant,
             setSubmitted: setSubmitted,
             setValue: setValue,

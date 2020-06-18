@@ -9,9 +9,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { QuantContextProvider} from './context/quants.context';
 
 const useStyles = makeStyles((theme) => ({
-   root: {
-      flexGrow: 1,
-   },
    paper: {
       padding: theme.spacing(5),
       backgroundColor: theme.palette.background.default,

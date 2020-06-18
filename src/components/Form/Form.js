@@ -46,7 +46,7 @@ const Form = () => {
    const activeQuant = quants.find(item => item.id === quant);
    const unitOptions = activeQuant? activeQuant.units: [];
    const submitDisabled = value?.length === 0 || !quant;
-   return <div>
+   return <div style={{textAlign: "left"}}>
          <h3>Value</h3>
          <form className={css.root} noValidate autoComplete="off" onSubmit={submit}>
             <Select
