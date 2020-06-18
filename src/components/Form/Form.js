@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Button from '@material-ui/core/Button';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
+import { QuantContext} from '../../context/quants.context';
 
 const useStyles = makeStyles((theme) => ({
    formControl: {
@@ -14,111 +15,82 @@ const useStyles = makeStyles((theme) => ({
    },
 }));
 
-const quants = [
-   { 
-      id: "length", 
-      label: "Délka", 
-      units: [
-         {id: "m", k: 1}, 
-         {id: "palce", k: 0.3}, 
-         {id: "stopy", k: 0.6}, 
-         {id: "míle", k: 1600}
-      ] 
-   },
-   { 
-      id: "surface", 
-      label: "Povrch", 
-      units: [
-         {id: "m2", k: 1}, 
-         {id: "hektar", k: 0.3}, 
-         {id: "akr", k: 0.6}, 
-      ]       
-   },
-   { 
-      id: "volume", 
-      label: "Objem", 
-      units: [
-         {id: "litr", k: 1}, 
-         {id: "galon", k: 0.3}, 
-         {id: "akr", k: 0.6}, 
-      ]             
-   },
-   { 
-      id: "temperature", 
-      label: "Teplota", 
-      units: [
-         {id: "°C", k: 1}, 
-         {id: "°F", k: 0.3}, 
-      ]       
-   },
-   { 
-      id: "time", 
-      label: "Čas", 
-      units: [
-         {id: "sekundy", k: 1}, 
-         {id: "minuty", k: 0.3}, 
-         {id: "hodiny", k: 0.3}, 
-         {id: "dny", k: 0.3}, 
-         {id: "týdny", k: 0.3}, 
-         {id: "měsíce", k: 0.3}, 
-         {id: "roky", k: 0.3}, 
-      ]       
-   }
-];
-
-
 const Form = () => {
-   const classes = useStyles();
-   const [quant, setQuant] = useState("");
-   const [unit, setUnit] = useState("");
-   const [unitOptions, setUnitOptions] = useState([]);
+   const {
+      quant, 
+      quants,
+      unit,
+      value,
+      setQuant,
+      setUnit,
+      setValue,
+      setSubmitted
+   } = useContext(QuantContext);
+
+   const css = useStyles();
+   // const [unitOptions, setUnitOptions] = useState([]);
 
    const changeQuant = (e) => {
       if (e){
          const value = e.target.value;
-         const unitOptions = quants.find(item => item.id === value).units ;
-         setUnitOptions(unitOptions);
+         // const unitOptions = quants.find(item => item.id === value).units ;
+         // setUnitOptions(unitOptions);
          setQuant(value)
       }
    }
+
+   const submit = (e) =>{
+      e.preventDefault()
+   }
+
+   const activeQuant = quants.find(item => item.id === quant);
+   const unitOptions = activeQuant? activeQuant.units: [];
+   const submitDisabled = value?.length === 0 || !quant;
    return <div>
-         <form className={classes.root} noValidate autoComplete="off">
+         <h3>Value</h3>
+         <form className={css.root} noValidate autoComplete="off" onSubmit={submit}>
             <Select
                native
                value={quant}
                onChange={changeQuant}
-               className={classes.selectEmpty}
+               className={css.selectEmpty}
                inputProps={{
                   name: 'quant',
                   id: 'quant',
                }}
             >
-               <option aria-label="None" value="">Vyberte veličinu</option>
+               <option aria-label="None" value="" disabled>Select value</option>
                {
                   quants.map(item => <option key={item.id} value={item.id}>{item.label}</option>)
                }
             </Select>
             <br/>
-            <TextField id="standard-basic" label="Zadejte hodnotu" />
+            <TextField id="standard-basic" label="Amount" placeholder="Enter amount" value={value} onChange={(e) => setValue(e.target.value)} />
             <br/>
             <Select
                native
                value={unit}
                onChange={(e) => setUnit(e.target.value)}
-               className={classes.selectEmpty}
+               className={css.selectEmpty}
                inputProps={{
                   name: 'unit',
                   id: 'unit',
                }}
             >
-               <option aria-label="None" value="">Vyberte jednotku</option>
+               <option aria-label="None" value="" disabled>Select unit</option>
                {
-                  unitOptions.map(item => <option key={item.id} value={item.id}>{item.id}</option>)
+                  unitOptions.map(item => <option key={item.id} value={item.id}>{item.id} ({item.symbol})</option>)
                }
             </Select>   
             <br/><br/>   
-            <Button variant="outlined" color="primary" href="#contained-buttons">
-              Převést
+            <Button 
+               variant="contained" 
+               color="primary" 
+               disabled={submitDisabled}
+               onClick={() => setSubmitted(true)}
+               size="large"
+            >
+               Convert
             </Button>                     
          </form>         
    </div>
