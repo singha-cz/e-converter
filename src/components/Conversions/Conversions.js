@@ -48,7 +48,7 @@ const Conversions = () => {
          </TableBody>
       </Table>
    </>
-   : <p><em>Select value/unit, enter amount first and click Convert.</em></p> 
+   : <p><em>Select value/unit, enter amount and click Convert.</em></p> 
    return element
 }
 
