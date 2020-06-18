@@ -65,7 +65,14 @@ const Form = () => {
                }
             </Select>
             <br/>
-            <TextField id="standard-basic" label="Amount" placeholder="Enter amount" value={value} onChange={(e) => setValue(e.target.value)} />
+            <TextField 
+               id="standard-basic" 
+               label="Amount" 
+               placeholder="Enter amount" 
+               value={value} 
+               type="number"
+               onChange={(e) => setValue(e.target.value)} 
+            />
             <br/>
             <Select
                native
