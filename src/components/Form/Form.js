@@ -1,9 +1,13 @@
 import React, { useState, useContext } from 'react';
 import Button from '@material-ui/core/Button';
 import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { QuantContext} from '../../context/quants.context';
+import { ConverterContext } from '../../context/converter.context';
 
 const useStyles = makeStyles((theme) => ({
    formControl: {
@@ -17,65 +21,57 @@ const useStyles = makeStyles((theme) => ({
 
 const Form = () => {
    const {
-      quant, 
-      quants,
-      unit,
       value,
-      setQuant,
-      setUnit,
+      valuesData,
+      unit,
+      amount,
       setValue,
+      setUnit,
+      setAmount,
       setSubmitted
-   } = useContext(QuantContext);
+   } = useContext(ConverterContext);
 
    const css = useStyles();
-   // const [unitOptions, setUnitOptions] = useState([]);
-
-   const changeQuant = (e) => {
-      if (e){
-         const value = e.target.value;
-         // const unitOptions = quants.find(item => item.id === value).units ;
-         // setUnitOptions(unitOptions);
-         setQuant(value)
-      }
-   }
-
-   const submit = (e) =>{
+   const submit = (e) => {
       e.preventDefault()
    }
 
-   const activeQuant = quants.find(item => item.id === quant);
-   const unitOptions = activeQuant? activeQuant.units: [];
-   const submitDisabled = value?.length === 0 || !quant;
-   return <div style={{textAlign: "left"}}>
-         <h3>Value</h3>
-         <form className={css.root} noValidate autoComplete="off" onSubmit={submit}>
+   const activeValue = valuesData.find(item => item.id === value);
+   const unitOptions = activeValue ? activeValue.units : [];
+   const submitDisabled = amount?.length === 0 || !value;
+   return <div style={{ textAlign: "left", marginBottom: "3rem" }}>
+      <Typography variant="h6">Value</Typography>
+      <form className={css.root} noValidate autoComplete="off" onSubmit={submit}>
+         <FormControl className={css.formControl}>
+            <InputLabel id="amountLabel">Value</InputLabel>
             <Select
-               native
-               value={quant}
-               onChange={changeQuant}
+               value={value}
+               onChange={(e) => setValue(e.target.value)}
                className={css.selectEmpty}
                inputProps={{
-                  name: 'quant',
-                  id: 'quant',
+                  name: 'value',
+                  id: 'value',
                }}
             >
-               <option aria-label="None" value="" disabled>Select value</option>
+               <MenuItem aria-label="None" value="" disabled>Select value</MenuItem>
                {
-                  quants.map(item => <option key={item.id} value={item.id}>{item.label}</option>)
+                  valuesData.map(item => <MenuItem key={item.id} value={item.id}>{item.label}</MenuItem>)
                }
             </Select>
-            <br/>
-            <TextField 
-               id="standard-basic" 
-               label="Amount" 
-               placeholder="Enter amount" 
-               value={value} 
+         </FormControl>
+         <FormControl className={css.formControl}>
+            <TextField
+               id="standard-basic"
+               label="Amount"
+               placeholder="Enter amount"
+               value={amount}
                type="number"
-               onChange={(e) => setValue(e.target.value)} 
+               onChange={(e) => setAmount(e.target.value)}
             />
-            <br/>
+         </FormControl>
+         <FormControl className={css.formControl}>
+            <InputLabel id="unitLabel">Unit</InputLabel>
             <Select
-               native
                value={unit}
                onChange={(e) => setUnit(e.target.value)}
                className={css.selectEmpty}
@@ -84,22 +80,23 @@ const Form = () => {
                   id: 'unit',
                }}
             >
-               <option aria-label="None" value="" disabled>Select unit</option>
+               <MenuItem aria-label="None" value="" disabled>Select unit</MenuItem>
                {
-                  unitOptions.map(item => <option key={item.id} value={item.id}>{item.id} ({item.symbol})</option>)
+                  unitOptions.map(item => <MenuItem key={item.id} value={item.id}>{item.id} ({item.symbol})</MenuItem>)
                }
-            </Select>   
-            <br/><br/>   
-            <Button 
-               variant="contained" 
-               color="primary" 
-               disabled={submitDisabled}
-               onClick={() => setSubmitted(true)}
-               size="large"
-            >
-               Convert
-            </Button>                     
-         </form>         
+            </Select>
+         </FormControl>
+         <br /><br />
+         <Button
+            variant="contained"
+            color="primary"
+            disabled={submitDisabled}
+            onClick={() => setSubmitted(true)}
+            size="large"
+         >
+            Convert
+            </Button>
+      </form>
    </div>
 }
 

@@ -2,9 +2,12 @@
   "name": "e-converter",
   "version": "1.0.0",
   "description": "unit converter",
+  "homepage": "http://singha-cz.github.io/e-converter",
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --open --mode development",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --mode production"
   },
@@ -27,6 +30,7 @@
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.11.0",
     "style-loader": "1.2.1",
-    "css-loader": "3.6.0"
+    "css-loader": "3.6.0",
+    "gh-pages": "^2.2.0"
   }
 }
