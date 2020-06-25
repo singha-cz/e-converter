@@ -17,8 +17,9 @@ const ConversionRow = ({ item, k }) => {
    if (value === "temperature") {
       const matrixValue = tempMatrix.find(it => it.id === unit);
       const matrixCalc = matrixValue.calcs[item.id];
-      const x = Number(amount);  // pouziva se v eval()
-      matrixRes = eval(matrixCalc) || 0;
+      const x = Number(amount);
+      const evFunc = new Function('x', `return ${matrixCalc}`);
+      matrixRes = evFunc(x) || 0;
    }
    const res = value === "temperature" ? matrixRes : amount * (relK / item.k);
    return <>
